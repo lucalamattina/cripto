@@ -1,0 +1,6 @@
+App.class
+Utils\StegAlgorithms.class
+Utils\aCases.class
+Utils\Arguments.class
+Utils\mCases.class
+Utils\OptionalArguments.class
