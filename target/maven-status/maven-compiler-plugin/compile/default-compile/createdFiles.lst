@@ -1,6 +1,6 @@
-App.class
-Utils\StegAlgorithms.class
-Utils\aCases.class
-Utils\Arguments.class
-Utils\mCases.class
-Utils\OptionalArguments.class
+itba\edu\ar\Utils\StegAlgorithms.class
+itba\edu\ar\App.class
+itba\edu\ar\Utils\aCases.class
+itba\edu\ar\Utils\mCases.class
+itba\edu\ar\Utils\OptionalArguments.class
+itba\edu\ar\Utils\Arguments.class

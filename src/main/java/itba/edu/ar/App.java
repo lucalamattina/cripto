@@ -1,7 +1,6 @@
-import Utils.*;
+package itba.edu.ar;
 
-import java.util.EnumSet;
-import java.util.Optional;
+import itba.edu.ar.Utils.*;
 
 public class App {
 
@@ -19,19 +18,12 @@ public class App {
 
         parseArguments();
 
-        System.out.println(embed);
-        System.out.println(inFileName);
-        System.out.println(carrierFileName);
-        System.out.println(outFileName);
-        System.out.println(stegAlgorithm);
-        System.out.println(a);
-        System.out.println(m);
-        System.out.println(password);
-        System.out.println(extract);
     }
 
     private static void parseArguments(){
         try {
+            System.out.println(System.getProperty("p"));
+
             embed = System.getProperty(Arguments.EMBED.getArgumentName());
             extract = System.getProperty(Arguments.EXTRACT.getArgumentName());
 
