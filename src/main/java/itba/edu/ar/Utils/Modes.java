@@ -1,6 +1,6 @@
 package itba.edu.ar.Utils;
 
-public enum mCases {
+public enum Modes {
     ECB ("ecb"),
     CFB ("cfb"),
     OFB ("ofb"),
@@ -8,7 +8,7 @@ public enum mCases {
 
     String mCase;
 
-    mCases(String mCase) {
+    Modes(String mCase) {
         this.mCase = mCase;
     }
 
@@ -16,8 +16,8 @@ public enum mCases {
         return mCase;
     }
 
-    public static mCases parseMCase(String arg) {
-        mCases mCase;
+    public static Modes parseMCase(String arg) {
+        Modes mCase;
         switch (arg) {
             case "ecb": mCase = ECB;
                 break;

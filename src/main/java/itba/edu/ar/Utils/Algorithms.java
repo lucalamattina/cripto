@@ -1,6 +1,6 @@
 package itba.edu.ar.Utils;
 
-public enum aCases {
+public enum Algorithms {
     AES128 ("aes128"),
     AES192 ("aes192"),
     AES256 ("aes256"),
@@ -8,7 +8,7 @@ public enum aCases {
 
     String aCase;
 
-    aCases(String aCase) {
+    Algorithms(String aCase) {
         this.aCase = aCase;
     }
 
@@ -16,8 +16,8 @@ public enum aCases {
         return aCase;
     }
 
-    public static aCases parseACases(String arg) {
-        aCases aCase;
+    public static Algorithms parseACases(String arg) {
+        Algorithms aCase;
         switch (arg) {
             case "aes128": aCase = AES128;
                 break;

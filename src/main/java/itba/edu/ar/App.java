@@ -1,50 +1,72 @@
 package itba.edu.ar;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import itba.edu.ar.Utils.*;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.Option;
+import org.kohsuke.args4j.spi.StringArrayOptionHandler;
+
+import java.util.Arrays;
+import java.util.StringJoiner;
 
 public class App {
 
-    private static String embed;
-    private static String inFileName;
-    private static String carrierFileName;
-    private static String outFileName;
-    private static StegAlgorithms stegAlgorithm;
-    private static aCases a;
-    private static mCases m;
-    private static String password;
-    private static String extract;
+    @Option(name = "-embed", usage = "Hide data", forbids = {"-extract"})
+    private static Boolean embed;
+
+    @Option(name = "-in", usage = "Data to be hidden", depends = {"-embed"}, handler = StringArrayOptionHandler.class)
+    private static String[] inFilename = {};
+
+    @Option(name = "-p", usage = "Image in bmp format that will hide the data", required = true, handler = StringArrayOptionHandler.class)
+    private static String[] porter;
+
+    @Option(name = "-out", usage = "bmp output file to hide the data in (data + image)", required = true, handler = StringArrayOptionHandler.class)
+    private static String[] outFilename;
+
+    @Option(name = "-steg", usage = "Steganography algorithm to be used <LSB1 | LSB4 | LSBI>", required = true)
+    private static StegAlgorithms stegoAlgorithm;
+
+    @Option(name = "-a", usage = "Encryption algorithm to be used <aes128 | aes192 | aes256 | des>")
+    private static Algorithms algorithm = Algorithms.AES128;
+
+    @Option(name = "-m", usage = "Encryption mode <ecb | cfb | ofb | cbc>")
+    private static Modes mode = Modes.CBC;
+
+    @Option(name = "-pass", usage = "Encryption password", handler = StringArrayOptionHandler.class)
+    private static String[] password = {};
+
+    @Option(name = "-extract", usage = "Extract data", forbids = {"-embed"})
+    private static Boolean extract;
 
     public static void main(String[] args) {
 
-        parseArguments();
-
-    }
-
-    private static void parseArguments(){
+        final CmdLineParser cmdParser = new CmdLineParser(new App());
         try {
-            System.out.println(System.getProperty("p"));
+            cmdParser.parseArgument(args);
 
-            embed = System.getProperty(Arguments.EMBED.getArgumentName());
-            extract = System.getProperty(Arguments.EXTRACT.getArgumentName());
-
-            inFileName = System.getProperty(Arguments.IN.getArgumentName());
-
-            carrierFileName = System.getProperty(Arguments.CARRIER.getArgumentName());
-            outFileName = System.getProperty(Arguments.OUT.getArgumentName());
-            stegAlgorithm = StegAlgorithms.valueOf(System.getProperty(Arguments.STEG.getArgumentName()));
-
-            a = aCases.valueOf(System.getProperty(OptionalArguments.A.getArgumentName()));
-            m = mCases.valueOf(System.getProperty(OptionalArguments.M.getArgumentName()));
-            password = System.getProperty(OptionalArguments.PASS.getArgumentName());
-
-            if ((extract !=null && inFileName!=null) || (embed!=null && inFileName==null)){//extract!=null && embed!=null included
-                throw new IllegalArgumentException("Excess or lack of arguments");
-            }
-
-
-        }catch (Exception e){
-
+            if( embed!= null && extract!=null )
+                throw new CmdLineException(cmdParser,"Option -embed and -extract cant both be used. Chose one.", new Throwable());
+            if (embed!= null && inFilename==null)
+                throw new CmdLineException(cmdParser,"Option -in must be present when -embed is used.", new Throwable());
+            if(embed==null && extract == null)
+                throw new CmdLineException(cmdParser,"Option -embed or -extract must be used.", new Throwable());
         }
-    }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+            cmdParser.printUsage(System.err);
+            System.exit(1);
+        }
 
+        System.out.println(embed);
+        System.out.println(extract);
+        System.out.println(Arrays.toString(inFilename));
+        System.out.println(Arrays.toString(password));
+        System.out.println(Arrays.toString(porter));
+        System.out.println(Arrays.toString(outFilename));
+        System.out.println(stegoAlgorithm);
+        System.out.println(algorithm);
+        System.out.println(mode);
+    }
 }
+
