@@ -1,14 +1,10 @@
 package itba.edu.ar;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import itba.edu.ar.Utils.*;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import org.kohsuke.args4j.spi.StringArrayOptionHandler;
-
-import java.util.Arrays;
-import java.util.StringJoiner;
 
 public class App {
 
@@ -39,6 +35,8 @@ public class App {
     @Option(name = "-extract", usage = "Extract data", forbids = {"-embed"})
     private static Boolean extract;
 
+    private static StegoBMP encryption;
+
     public static void main(String[] args) {
 
         final CmdLineParser cmdParser = new CmdLineParser(new App());
@@ -58,15 +56,10 @@ public class App {
             System.exit(1);
         }
 
-        System.out.println(embed);
-        System.out.println(extract);
-        System.out.println(Arrays.toString(inFilename));
-        System.out.println(Arrays.toString(password));
-        System.out.println(Arrays.toString(porter));
-        System.out.println(Arrays.toString(outFilename));
-        System.out.println(stegoAlgorithm);
-        System.out.println(algorithm);
-        System.out.println(mode);
+        if(embed != null){
+            encryption = new StegoBMP(stegoAlgorithm);
+        }
+
     }
 }
 

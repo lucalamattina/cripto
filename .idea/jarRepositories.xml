@@ -2,9 +2,114 @@
 <project version="4">
   <component name="RemoteRepositoriesConfiguration">
     <remote-repository>
+      <option name="id" value="mule-ee-thirdparty" />
+      <option name="name" value="Local repository for thirdparty" />
+      <option name="url" value="https://repository-master.mulesoft.org/nexus/content/repositories/ext-releases/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="mule-ee-dependencies" />
+      <option name="name" value="Mule EE Dependencies" />
+      <option name="url" value="https://repository-master.mulesoft.org/nexus/content/groups/mule-ee-dependencies/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="mulesoft-private" />
+      <option name="name" value="Mulesoft Private" />
+      <option name="url" value="https://repository.mulesoft.org/nexus/content/repositories/private" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="mule-ci-releases" />
+      <option name="name" value="Nexus CI Releases" />
+      <option name="url" value="https://repository-master.mulesoft.org/nexus/content/repositories/ci-releases/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="ext-releases" />
+      <option name="name" value="External Releases" />
+      <option name="url" value="https://repository.mulesoft.org/nexus/content/repositories/ext-releases/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="mule-ci-snapshots" />
+      <option name="name" value="Nexus CI Snapshots" />
+      <option name="url" value="https://repository-master.mulesoft.org/nexus/content/repositories/ci-snapshots/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="mulesoft-snapshots" />
+      <option name="name" value="MuleSoft Snapshots Repository" />
+      <option name="url" value="http://repository.mulesoft.org/snapshots/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="mulesoft-releases" />
+      <option name="name" value="MuleSoft Releases Repository" />
+      <option name="url" value="http://repository.mulesoft.org/releases/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="mule-public" />
+      <option name="name" value="mule-public" />
+      <option name="url" value="https://repository.mulesoft.org/nexus/content/repositories/releases/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="build-snapshots" />
+      <option name="name" value="Nexus EE Snapshots" />
+      <option name="url" value="https://nexus.build.msap.io/nexus/content/repositories/snapshots" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="public-nexus-master-ci-releases" />
+      <option name="name" value="Nexus EE Snapshots" />
+      <option name="url" value="https://repository-master.mulesoft.org/nexus/content/repositories/ci-releases" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="mule-ee-releases" />
+      <option name="name" value="Mule Release Repository" />
+      <option name="url" value="https://repository.mulesoft.org/nexus/content/repositories/private" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="mule-releases" />
+      <option name="name" value="Nexus Public Releases" />
+      <option name="url" value="https://repository-master.mulesoft.org/nexus/content/repositories/snapshots/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="mule-artifacts" />
+      <option name="name" value="Nexus EE Snapshots" />
+      <option name="url" value="https://nexus.build.msap.io/nexus/content/repositories/artifacts" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="jboss.community" />
+      <option name="name" value="JBoss Community repository" />
+      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="libs-releases" />
+      <option name="name" value="External libs" />
+      <option name="url" value="https://repository.mulesoft.org/nexus/content/repositories/private" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="mule-org-releases" />
+      <option name="name" value="releases ee" />
+      <option name="url" value="https://repository-master.mulesoft.org/nexus/content/repositories/releases-ee" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="exchange" />
+      <option name="name" value="exchange" />
+      <option name="url" value="https://maven.devx.anypoint.mulesoft.com/api/v1/maven" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="central" />
       <option name="name" value="Central Repository" />
       <option name="url" value="https://repo.maven.apache.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="nexus-snapshots" />
+      <option name="name" value="Nexus EE Snapshots" />
+      <option name="url" value="https://nexus.build.msap.io/nexus/content/repositories/snapshots" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="third-party" />
+      <option name="name" value="Nexus EE Snapshots" />
+      <option name="url" value="https://repository-master.mulesoft.org/nexus/content/repositories/thirdparty" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="mule-ee-snapshots" />
+      <option name="name" value="mule-ee-snapshots" />
+      <option name="url" value="https://repository.mulesoft.org/nexus/content/repositories/private" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="central" />
@@ -12,9 +117,19 @@
       <option name="url" value="https://repo1.maven.org/maven2" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="jboss.community" />
-      <option name="name" value="JBoss Community repository" />
-      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+      <option name="id" value="nexus-third-party" />
+      <option name="name" value="Nexus Third Party Dependencies" />
+      <option name="url" value="https://repository-master.mulesoft.org/nexus/content/repositories/thirdparty/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="mule-snapshots" />
+      <option name="name" value="Nexus Public Releases" />
+      <option name="url" value="https://repository-master.mulesoft.org/nexus/content/repositories/snapshots/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="mule-releases-ee" />
+      <option name="name" value="Nexus EE Releases" />
+      <option name="url" value="https://repository-master.mulesoft.org/nexus/content/repositories/releases-ee/" />
     </remote-repository>
   </component>
 </project>
