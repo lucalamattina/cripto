@@ -6,6 +6,8 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import org.kohsuke.args4j.spi.StringArrayOptionHandler;
 
+import java.util.Arrays;
+
 public class App {
 
     @Option(name = "-embed", usage = "Hide data", forbids = {"-extract"})
@@ -56,8 +58,18 @@ public class App {
             System.exit(1);
         }
 
-        if(embed != null){
-            encryption = new StegoBMP(stegoAlgorithm);
+       if(embed != null){
+           try {
+               if (inFilename.length > 1)
+                   throw new CmdLineException(cmdParser,"in Path Is incorrect", new Throwable());
+               encryption = new StegoBMP(stegoAlgorithm, inFilename[0]);
+
+               encryption.encrypt();
+
+           }catch (Exception e){
+               System.out.println(e.getMessage());
+               System.exit(1);
+           }
         }
 
     }
