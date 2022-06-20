@@ -7,6 +7,7 @@ import org.kohsuke.args4j.Option;
 import org.kohsuke.args4j.spi.StringArrayOptionHandler;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 public class App {
 
@@ -26,7 +27,7 @@ public class App {
     private static StegAlgorithms stegoAlgorithm;
 
     @Option(name = "-a", usage = "Encryption algorithm to be used <aes128 | aes192 | aes256 | des>")
-    private static Algorithms algorithm = Algorithms.AES128;
+    private static Algorithm algorithm = Algorithm.AES128;
 
     @Option(name = "-m", usage = "Encryption mode <ecb | cfb | ofb | cbc>")
     private static Modes mode = Modes.CBC;
@@ -37,7 +38,7 @@ public class App {
     @Option(name = "-extract", usage = "Extract data", forbids = {"-embed"})
     private static Boolean extract;
 
-    private static StegoBMP encryption;
+    private static StegoBMP steganography;
 
     public static void main(String[] args) {
 
@@ -62,9 +63,15 @@ public class App {
            try {
                if (inFilename.length > 1)
                    throw new CmdLineException(cmdParser,"in Path Is incorrect", new Throwable());
-               encryption = new StegoBMP(stegoAlgorithm, inFilename[0]);
+               steganography = new StegoBMP(stegoAlgorithm, inFilename[0]);
 
-               encryption.encrypt();
+              steganography.readMessage();
+
+              Optional<String> pass = Arrays.stream(password).findFirst();
+              if(pass.isPresent())
+                  steganography.encrypt(pass.toString(), algorithm, mode);
+
+              steganography.steg();
 
            }catch (Exception e){
                System.out.println(e.getMessage());
