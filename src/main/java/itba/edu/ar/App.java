@@ -68,10 +68,16 @@ public class App {
               steganography.readMessage();
 
               Optional<String> pass = Arrays.stream(password).findFirst();
+
+               //TODO testear y ver EVPBytesToKeyAndIv
+               //TODO testear y ver EVPBytesToKeyAndIv
+               //TODO testear y ver EVPBytesToKeyAndIv
+               //TODO testear y ver EVPBytesToKeyAndIv
+               //TODO testear y ver EVPBytesToKeyAndIv
               if(pass.isPresent())
                   steganography.encrypt(pass.toString(), algorithm, mode);
 
-              steganography.steg();
+            //  steganography.steg();
 
            }catch (Exception e){
                System.out.println(e.getMessage());

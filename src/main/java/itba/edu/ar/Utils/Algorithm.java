@@ -6,10 +6,10 @@ public enum Algorithm {
     AES256 ("aes256"),
     DES ("des");
 
-    private String aCase;
-    private int keySize;
-    private int blockSize;
-    private String algTransformation;
+    private final String aCase;
+    private final int keySize;
+    private final int blockSize;
+    private final String algTransformation;
 
     Algorithm(String aCase) {
 

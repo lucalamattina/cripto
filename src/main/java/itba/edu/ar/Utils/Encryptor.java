@@ -5,13 +5,17 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Encryptor {
-    private final static int COUNT = 1;
+
+    private static final int ITERATIONS = 1;
+    private static final int INDEX_KEY = 0;
+    private static final int INDEX_IV = 1;
+
     private final Algorithm algorithm;
     private final Modes mode;
-    private final EncriptionPadding padding;
 
     private byte[] size;
     private byte[] bytes;
@@ -28,52 +32,109 @@ public class Encryptor {
 
         this.algorithm = algorithm;
         this.mode = mode;
-
-        this.size = cipher.simetricEncript(message.toByteArray(), password);
-        //necesito algoritmo modo y padding
-
-
-        this.bytes = Tools.bigEndian(bytes.length);
-    }
-
-    public String getTransformation() {
-        return algorithm.getRepresentation() + "/" + mode.getRepresentation() + "/" + padding.getRepresentation();
-    }
-
-    private byte[] cipher(int i, byte[] bytes, String password) throws Exception {
-        Cipher cipher = Cipher.getInstance(getTransformation());
-
-        /*
-            The size of the IV depends on the mode, but typically it is the same size as the block size
-        */
-
-        byte[] passwordBytes = (password).getBytes(StandardCharsets.UTF_8);
-        byte[][] keyAndIv = EVPBytesToKeyAndIv(COUNT, passwordBytes, algorithm.getKeySize(), algorithm.getBlockSize());
-        byte[] key = keyAndIv[0];
-        byte[] iv = keyAndIv[1];
-
-        SecretKey secretKey = new SecretKeySpec(key, algorithm.getRepresentation());
-        switch (mode) {
-            case CBC:
-            case CFB:
-            case OFB:
-                cipher.init(i, secretKey, new IvParameterSpec(iv));
-                break;
-            case ECB:
-                cipher.init(i, secretKey);
-                break;
+        try {
+            symmetricEncrypt(message.toByteArray(), password);
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        return cipher.doFinal(bytes);
+
+        this.size = Tools.bigEndian(this.bytes.length);
+
     }
 
-    public byte[] simetricEncript(byte[] bytes, String password) throws Exception {
-        return cipher(Cipher.ENCRYPT_MODE, bytes, password);
+    private void symmetricEncrypt(byte[] bytes, String password) throws Exception {
+        Cipher cipher = Cipher.getInstance(algorithm.getAlgTransformation() + "/" + mode.getModeTransformation() + "/" + mode.getPaddingTransformation());
+
+        byte[] passwordInBytes = (password).getBytes(StandardCharsets.UTF_8);
+
+        // byte[][] keyWithIv = EVPBytesToKeyAndIv(ITERATIONS, passwordInBytes, algorithm.getKeySize(), algorithm.getBlockSize());
+         byte[][] keyWithIv = EVP_BytesToKey( algorithm.getKeySize(), algorithm.getBlockSize(), passwordInBytes);
+
+        byte[] key = keyWithIv[INDEX_KEY];
+        byte[] iv = keyWithIv[INDEX_IV];
+
+        SecretKey secretKey = new SecretKeySpec(key, algorithm.getAlgTransformation());
+
+        if (mode.equals(Modes.ECB))
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+        else
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey, new IvParameterSpec(iv));
+
+        this.size = cipher.doFinal(bytes);
     }
 
-    public byte[] simetricDecript(byte[] bytes, String password) throws Exception {
-        return cipher(Cipher.DECRYPT_MODE, bytes, password);
+    public static byte[][] EVP_BytesToKey(int key_len, int iv_len, byte[] data) throws NoSuchAlgorithmException {
+
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+
+        byte[][] both = new byte[2][];
+        byte[] key = new byte[key_len];
+        int key_ix = 0;
+        byte[] iv = new byte[iv_len];
+        int iv_ix = 0;
+
+        both[0] = key;
+        both[1] = iv;
+        byte[] md_buf = null;
+        int nkey = key_len;
+        int niv = iv_len;
+        int i = 0;
+
+        if (data == null) {
+            return both;
+        }
+        int addmd = 0;
+        for (;;) {
+            md.reset();
+            if (addmd++ > 0) {
+                md.update(md_buf);
+            }
+            md.update(data);
+
+			/*if (null != salt) {
+				md.update(salt, 0, 8);
+			}*/
+
+            md_buf = md.digest();
+            for (i = 1; i < ITERATIONS; i++) {
+                md.reset();
+                md.update(md_buf);
+                md_buf = md.digest();
+            }
+            i = 0;
+            if (nkey > 0) {
+                for (;;) {
+                    if (nkey == 0)
+                        break;
+                    if (i == md_buf.length)
+                        break;
+                    key[key_ix++] = md_buf[i];
+                    nkey--;
+                    i++;
+                }
+            }
+            if (niv > 0 && i != md_buf.length) {
+                for (;;) {
+                    if (niv == 0)
+                        break;
+                    if (i == md_buf.length)
+                        break;
+                    iv[iv_ix++] = md_buf[i];
+                    niv--;
+                    i++;
+                }
+            }
+            if (nkey == 0 && niv == 0) {
+                break;
+            }
+        }
+        for (i = 0; i < md_buf.length; i++) {
+            md_buf[i] = 0;
+        }
+        return both;
     }
 
+//TODO
     /*
         Para generar clave e iv a partir de una password, se puede utilizar la función EVP_BytesToKey().
 
@@ -112,7 +173,8 @@ public class Encryptor {
         Funcion equivalente a EVP_BytesToKey() de openSSL para generara una key y iv a partir de una password.
         Usamos como funcion de hash SHA-256, ya que es la que pide la catedra.
         No incluimos slat, ya que asi lo pide la catedra.
-    */
+
+
     private byte[][] EVPBytesToKeyAndIv(int iterations, byte[] data, int keySize, int ivSize) throws NoSuchAlgorithmException {
         byte[] mdBuff = Hashing.sha256(data);
         byte[] key = new byte[keySize];
@@ -147,6 +209,7 @@ public class Encryptor {
         keyAndIv[0] = key;
         keyAndIv[1] = iv;
         return keyAndIv;
-    }
+    }    */
+
 
 }
