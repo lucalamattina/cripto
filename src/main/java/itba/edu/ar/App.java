@@ -6,6 +6,9 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import org.kohsuke.args4j.spi.StringArrayOptionHandler;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -39,6 +42,7 @@ public class App {
     private static Boolean extract;
 
     private static StegoBMP steganography;
+    private static boolean encrypted;
 
     public static void main(String[] args) {
 
@@ -59,6 +63,13 @@ public class App {
             System.exit(1);
         }
 
+        Optional<String> pass = Arrays.stream(password).findFirst();
+        if(pass.isPresent()){
+            encrypted = true;
+        }
+
+        System.out.println(encrypted + password[0]);
+
        if(embed != null){
            try {
                if (inFilename.length > 1)
@@ -67,22 +78,61 @@ public class App {
 
               steganography.readMessage();
 
-              Optional<String> pass = Arrays.stream(password).findFirst();
+               System.out.println("non encrypt");
+               for (byte fileByte : steganography.getMessageFile().getFileBytes()) {
+                   System.out.println(fileByte);
+               }
 
                //TODO testear y ver EVPBytesToKeyAndIv
                //TODO testear y ver EVPBytesToKeyAndIv
                //TODO testear y ver EVPBytesToKeyAndIv
                //TODO testear y ver EVPBytesToKeyAndIv
                //TODO testear y ver EVPBytesToKeyAndIv
-              if(pass.isPresent())
+              if(encrypted){
                   steganography.encrypt(pass.toString(), algorithm, mode);
-
+              }
             //  steganography.steg();
-
            }catch (Exception e){
                System.out.println(e.getMessage());
                System.exit(1);
            }
+
+       }
+
+
+        if(true){//extract != null){
+            try {
+                Message message = steganography.getMessageFile();
+                if (encrypted) {
+                    Encryptor encryptedMsg = steganography.getEncryptedMessage();
+
+                    System.out.println("encrypted");
+                    for (byte fileByte : encryptedMsg.getCipherBytes()){
+                        System.out.println(fileByte);
+                    }
+                    System.out.println("DECRIP");
+                    message = steganography.decrypt(password[0]);
+
+                    for (byte fileByte : message.getFileBytes()) {
+                        System.out.println(fileByte);
+                    }
+                }
+                /*else {
+
+                   message = lsb.extract(holderBmp.getPixelData());
+                }*/
+
+
+                File outFile = new File(outFilename[0] + message.getFileExtension());
+
+                OutputStream os = new FileOutputStream(outFile);
+                os.write(message.getFileBytes());
+                os.close();
+
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+                System.exit(1);
+            }
         }
 
     }
