@@ -1,5 +1,6 @@
 package itba.edu.ar.Utils;
 
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
@@ -15,8 +16,7 @@ public class Tools {
     public static int recoverBigEndianBytes(byte[] bytes) {
         ByteBuffer buffer = ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN);
         buffer.put(bytes);
-        buffer.rewind();
-        System.out.println("despues");
+        ((Buffer)buffer).rewind();
         return buffer.getInt();
     }
 

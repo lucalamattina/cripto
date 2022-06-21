@@ -106,13 +106,12 @@ public class App {
                 if (encrypted) {
                     Encryptor encryptedMsg = steganography.getEncryptedMessage();
 
-                    System.out.println("encrypted");
                     for (byte fileByte : encryptedMsg.getCipherBytes()){
                         System.out.println(fileByte);
                     }
-                    System.out.println("DECRIP");
                     message = steganography.decrypt(password[0]);
 
+                    System.out.println("msg bytes");
                     for (byte fileByte : message.getFileBytes()) {
                         System.out.println(fileByte);
                     }
@@ -122,6 +121,7 @@ public class App {
                    message = lsb.extract(holderBmp.getPixelData());
                 }*/
 
+                System.out.println("extension :" + message.getFileExtension());
 
                 File outFile = new File(outFilename[0] + message.getFileExtension());
 

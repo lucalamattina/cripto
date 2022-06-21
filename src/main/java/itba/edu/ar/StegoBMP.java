@@ -41,16 +41,8 @@ public class StegoBMP {
 
         byte[] decryptedMsg = encryptedMessage.getMessage(password);
 
-        for (byte b : decryptedMsg) {
-            System.out.println(b);
-        }
-
-
         byte[] msgSize = Arrays.copyOf(decryptedMsg, 4);
-        System.out.println("antes");
-
         int length = Tools.recoverBigEndianBytes(msgSize);
-
         byte[] msgBytes = Arrays.copyOfRange(decryptedMsg, 4, length + 4);
         byte[] extension = Arrays.copyOfRange(decryptedMsg, length + 4, decryptedMsg.length);
 
@@ -67,6 +59,8 @@ public class StegoBMP {
                 extension = "";
 
             byte[] fileExtension = Tools.makeNullTerminatedBytes(extension);
+
+
 
             byte[] fileBytes = Files.readAllBytes(Paths.get(fileName));
 
