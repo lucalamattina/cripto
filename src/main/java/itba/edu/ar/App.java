@@ -90,7 +90,7 @@ public class App {
         }
 
 
-        if(true){//extract != null){
+        if(extract != null){
             try {
                 Message message = steganography.getMessageFile();
                 if (encrypted) {

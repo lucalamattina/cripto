@@ -1,7 +1,9 @@
 package itba.edu.ar;
 
 import itba.edu.ar.Utils.*;
+import itba.edu.ar.bmp.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -20,17 +22,30 @@ public class StegoBMP {
 
     }
 
-    public void steg(){
+    public void steg(String holderFile){
 
-        switch (algorithm) {
-            case LSB1:
-                break;
-            case LSB4:
-                break;
-            case LSBI:
-                break;
-            default:
+
+        Bmp holderBmp;
+        try {
+            holderBmp = Bmp.read(holderFile);
+
+            switch (algorithm) {
+                case LSB1:
+                    break;
+                case LSB4:
+                    break;
+                case LSBI:
+                    break;
+                default:
+            }
+
+
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
+
+
     }
 
     public void encrypt(String password , Algorithm algorithm, Modes mode) {
