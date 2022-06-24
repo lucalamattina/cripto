@@ -68,7 +68,6 @@ public class App {
             encrypted = true;
         }
 
-        System.out.println(encrypted + password[0]);
 
        if(embed != null){
            try {
@@ -78,18 +77,9 @@ public class App {
 
               steganography.readMessage();
 
-               System.out.println("non encrypt");
-               for (byte fileByte : steganography.getMessageFile().getFileBytes()) {
-                   System.out.println(fileByte);
-               }
 
-               //TODO testear y ver EVPBytesToKeyAndIv
-               //TODO testear y ver EVPBytesToKeyAndIv
-               //TODO testear y ver EVPBytesToKeyAndIv
-               //TODO testear y ver EVPBytesToKeyAndIv
-               //TODO testear y ver EVPBytesToKeyAndIv
               if(encrypted){
-                  steganography.encrypt(pass.toString(), algorithm, mode);
+                  steganography.encrypt(password[0], algorithm, mode);
               }
             //  steganography.steg();
            }catch (Exception e){
@@ -106,22 +96,15 @@ public class App {
                 if (encrypted) {
                     Encryptor encryptedMsg = steganography.getEncryptedMessage();
 
-                    for (byte fileByte : encryptedMsg.getCipherBytes()){
-                        System.out.println(fileByte);
-                    }
+
                     message = steganography.decrypt(password[0]);
 
-                    System.out.println("msg bytes");
-                    for (byte fileByte : message.getFileBytes()) {
-                        System.out.println(fileByte);
-                    }
                 }
                 /*else {
 
                    message = lsb.extract(holderBmp.getPixelData());
                 }*/
 
-                System.out.println("extension :" + message.getFileExtension());
 
                 File outFile = new File(outFilename[0] + message.getFileExtension());
 
@@ -135,6 +118,19 @@ public class App {
             }
         }
 
+    }
+    private static String hexStringFromBytes(byte[] b) {
+        char[] hexChars = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+        StringBuilder hex = new StringBuilder();
+        int msb;
+        int lsb;
+        int j;
+        for (j = 0; j < b.length; j++) {
+            msb = ((int) b[j] & 0x000000FF) / 16;
+            lsb = ((int) b[j] & 0x000000FF) % 16;
+            hex.append(hexChars[msb]).append(hexChars[lsb]);
+        }
+        return (hex.toString());
     }
 }
 

@@ -32,7 +32,6 @@ public class Tools {
 
         for (int i = 0; i < nullTerminatedBytes.length;i++) {
             if(nullTerminatedBytes[i] == '\0') {
-                System.out.println(i + new  String(nullTerminatedBytes, 0, i, StandardCharsets.ISO_8859_1));
                 return new String(nullTerminatedBytes, 0, i, StandardCharsets.ISO_8859_1);
             }
         }
