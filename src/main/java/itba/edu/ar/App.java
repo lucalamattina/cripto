@@ -119,18 +119,5 @@ public class App {
         }
 
     }
-    private static String hexStringFromBytes(byte[] b) {
-        char[] hexChars = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
-        StringBuilder hex = new StringBuilder();
-        int msb;
-        int lsb;
-        int j;
-        for (j = 0; j < b.length; j++) {
-            msb = ((int) b[j] & 0x000000FF) / 16;
-            lsb = ((int) b[j] & 0x000000FF) % 16;
-            hex.append(hexChars[msb]).append(hexChars[lsb]);
-        }
-        return (hex.toString());
-    }
 }
 

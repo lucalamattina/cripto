@@ -72,6 +72,11 @@
       <option name="url" value="https://nexus.build.msap.io/nexus/content/repositories/artifacts" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="nexus-releases" />
+      <option name="name" value="Nexus EE Dependencies" />
+      <option name="url" value="https://nexus.build.msap.io/nexus/content/repositories/releases" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="jboss.community" />
       <option name="name" value="JBoss Community repository" />
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
