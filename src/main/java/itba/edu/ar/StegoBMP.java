@@ -3,15 +3,15 @@ package itba.edu.ar;
 import itba.edu.ar.Utils.*;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 public class StegoBMP {
 
     StegAlgorithms algorithm;
     String fileName;
-    BMP bmpFile;
+    Message messageFile;
     Encryptor encryptedMessage;
 
     public StegoBMP(StegAlgorithms algorithm, String inFileName ) {
@@ -34,7 +34,20 @@ public class StegoBMP {
     }
 
     public void encrypt(String password , Algorithm algorithm, Modes mode) {
-            encryptedMessage = new Encryptor(bmpFile,password,algorithm, mode);
+            encryptedMessage = new Encryptor(messageFile, password, algorithm, mode);
+    }
+
+    public Message decrypt(String password) {
+
+        byte[] decryptedMsg = encryptedMessage.getMessage(password);
+
+        byte[] msgSize = Arrays.copyOf(decryptedMsg, 4);
+        int length = Tools.recoverBigEndianBytes(msgSize);
+        byte[] msgBytes = Arrays.copyOfRange(decryptedMsg, 4, length + 4);
+        byte[] extension = Arrays.copyOfRange(decryptedMsg, length + 4, decryptedMsg.length);
+
+        return new Message(msgBytes,msgSize,extension);
+
     }
 
     public void readMessage(){
@@ -44,26 +57,27 @@ public class StegoBMP {
                 extension = fileName.substring(fileName.lastIndexOf("."));
             else
                 extension = "";
-            byte[] bytes = extension.getBytes(StandardCharsets.ISO_8859_1);
-            byte[] fileExtension = new byte[bytes.length + 1];
-            System.arraycopy(bytes, 0, fileExtension, 0, bytes.length);
+
+            byte[] fileExtension = Tools.makeNullTerminatedBytes(extension);
+
+
 
             byte[] fileBytes = Files.readAllBytes(Paths.get(fileName));
 
-            byte[] size = Tools.bigEndian(fileBytes.length);
+            byte[] size = Tools.makeBigEndian(fileBytes.length);
 
-
-            //ByteBuffer buffer = ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN);
-            //buffer.putInt(fileBytes.length);
-            //byte[] size = buffer.array();
-
-
-            this.bmpFile = new BMP(fileBytes,size,fileExtension);
+            this.messageFile = new Message(fileBytes,size,fileExtension);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    public Message getMessageFile() {
+        return messageFile;
+    }
 
+    public Encryptor getEncryptedMessage() {
+        return encryptedMessage;
+    }
 }

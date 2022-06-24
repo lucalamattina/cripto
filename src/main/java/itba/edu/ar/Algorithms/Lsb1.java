@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Lsb1 {
-/*
+
     // Cantidad de bits reservados al tamaño
     private static final int SIZE_LENGTH = 32;
 
@@ -188,5 +188,4 @@ public class Lsb1 {
         int bitsToWrite = messageSize * 8;
         return bmp.length >= bitsToWrite;
     }
-*/
 }

@@ -1,7 +1,7 @@
 package itba.edu.ar.Algorithms;
 
 public class Lsb4 {
-/*
+
     // Cantidad de bits reservados al tamaño
     private static final int SIZE_LENGTH = 32;
 
@@ -197,5 +197,5 @@ public class Lsb4 {
         int bitsToWrite = messageSize * 8;
         return bmp.length * lsbs >= bitsToWrite;
     }
-*/
+
 }

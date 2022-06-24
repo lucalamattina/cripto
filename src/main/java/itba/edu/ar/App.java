@@ -1,15 +1,15 @@
 package itba.edu.ar;
 
-import itba.edu.ar.Algorithms.NotEnoughSpaceException;
 import itba.edu.ar.Utils.*;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import org.kohsuke.args4j.spi.StringArrayOptionHandler;
 
-import java.util.ArrayList;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 public class App {
@@ -42,6 +42,7 @@ public class App {
     private static Boolean extract;
 
     private static StegoBMP steganography;
+    private static boolean encrypted;
 
     public static void main(String[] args) {
 
@@ -49,45 +50,73 @@ public class App {
         try {
             cmdParser.parseArgument(args);
 
-            if (embed != null && extract != null)
-                throw new CmdLineException(cmdParser, "Option -embed and -extract cant both be used. Chose one.", new Throwable());
-            if (embed != null && inFilename == null)
-                throw new CmdLineException(cmdParser, "Option -in must be present when -embed is used.", new Throwable());
-            if (embed == null && extract == null)
-                throw new CmdLineException(cmdParser, "Option -embed or -extract must be used.", new Throwable());
-        } catch (Exception e) {
+            if( embed!= null && extract!=null )
+                throw new CmdLineException(cmdParser,"Option -embed and -extract cant both be used. Chose one.", new Throwable());
+            if (embed!= null && inFilename==null)
+                throw new CmdLineException(cmdParser,"Option -in must be present when -embed is used.", new Throwable());
+            if(embed==null && extract == null)
+                throw new CmdLineException(cmdParser,"Option -embed or -extract must be used.", new Throwable());
+        }
+        catch (Exception e){
             System.out.println(e.getMessage());
             cmdParser.printUsage(System.err);
             System.exit(1);
         }
 
-        if (embed != null) {
+        Optional<String> pass = Arrays.stream(password).findFirst();
+        if(pass.isPresent()){
+            encrypted = true;
+        }
+
+
+        if(embed != null){
             try {
                 if (inFilename.length > 1)
-                    throw new CmdLineException(cmdParser, "in Path Is incorrect", new Throwable());
+                    throw new CmdLineException(cmdParser,"in Path Is incorrect", new Throwable());
                 steganography = new StegoBMP(stegoAlgorithm, inFilename[0]);
 
                 steganography.readMessage();
 
-                Optional<String> pass = Arrays.stream(password).findFirst();
 
-                //TODO testear y ver EVPBytesToKeyAndIv
-                //TODO testear y ver EVPBytesToKeyAndIv
-                //TODO testear y ver EVPBytesToKeyAndIv
-                //TODO testear y ver EVPBytesToKeyAndIv
-                //TODO testear y ver EVPBytesToKeyAndIv
-                if (pass.isPresent())
-                    steganography.encrypt(pass.toString(), algorithm, mode);
-
+                if(encrypted){
+                    steganography.encrypt(password[0], algorithm, mode);
+                }
                 //  steganography.steg();
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+                System.exit(1);
+            }
 
-            } catch (Exception e) {
+        }
+
+
+        if(true){//extract != null){
+            try {
+                Message message = steganography.getMessageFile();
+                if (encrypted) {
+                    Encryptor encryptedMsg = steganography.getEncryptedMessage();
+
+
+                    message = steganography.decrypt(password[0]);
+
+                }
+                /*else {
+
+                   message = lsb.extract(holderBmp.getPixelData());
+                }*/
+
+
+                File outFile = new File(outFilename[0] + message.getFileExtension());
+
+                OutputStream os = new FileOutputStream(outFile);
+                os.write(message.getFileBytes());
+                os.close();
+
+            }catch (Exception e){
                 System.out.println(e.getMessage());
                 System.exit(1);
             }
         }
-
-        Arrays.fill(bytes, (byte) 1);
 
     }
 }
