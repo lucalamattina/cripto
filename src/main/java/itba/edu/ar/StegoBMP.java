@@ -50,11 +50,16 @@ public class StegoBMP {
                         throw new CmdLineException("wrong algorithm", new Throwable());
                 }
             }else {
+
+
+
                 switch (algorithm) {
                     case LSB1:
+                        System.out.println("cripted " + encryptedMessage.getBytes().length);
                         outBmpData = Lsb1.embeddingCiphered(encryptedMessage, holderBmp.getPixelData());
                         break;
                     case LSB4:
+                        System.out.println("cripted " + encryptedMessage.getBytes().length);
                         outBmpData = Lsb4.embeddingCiphered(encryptedMessage, holderBmp.getPixelData());
                         break;
                     case LSBI:

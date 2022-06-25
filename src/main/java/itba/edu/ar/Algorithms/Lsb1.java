@@ -59,6 +59,7 @@ public class Lsb1 {
     private static void hide(byte[] messageToEncrypt, byte[] bmp, int startIndex) {
         int bmpIndex = startIndex;
         for (int messageIndex = 0; messageIndex < messageToEncrypt.length * 8; bmpIndex++) {
+
             int bitValue = getBitValueFromArray(messageToEncrypt, messageIndex);
             setBitValue(bmp, bmpIndex, 0, bitValue);
             messageIndex++;
@@ -103,7 +104,9 @@ public class Lsb1 {
         }
 
         byte[] editedBmp = bmp.clone();
-        hide(cipherMessage.getBytes(), editedBmp, 0); //TODO: ESTO TALVEZ NO FUNCIONE
+
+        hide(cipherMessage.getCipherSize(), editedBmp, 0);
+        hide(cipherMessage.getBytes(), editedBmp, 32);
 
         return editedBmp;
     }

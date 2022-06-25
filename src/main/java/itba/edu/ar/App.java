@@ -80,7 +80,6 @@ public class App {
                 if(encrypted){
                     steganography.encrypt(password[0], algorithm, mode);
                 }
-
                 steganography.steg( porter[0]);
 
             }catch (Exception e){
@@ -93,11 +92,16 @@ public class App {
         if(extract != null){
             try {
 
-                steganography = new StegoBMP(stegoAlgorithm,null, porter[0], encrypted);
-                Message message = steganography.deSteg(porter[0]);
-                if (encrypted) {
+                steganography = new StegoBMP(stegoAlgorithm,null, outFilename[0], encrypted);
+                Message  message;
+                if (!encrypted) {
+                     message = steganography.deSteg(porter[0]);
+                } else  {
+
+                    System.out.println("IIINNN");
+
                     //podria ser void
-                    byte[] encryptedMsg = steganography.cryptedDeSteg(outFilename[0], algorithm, mode);
+                    byte[] encryptedMsg = steganography.cryptedDeSteg(porter[0], algorithm, mode);
                     message = steganography.decrypt(password[0]);
 
                 }
