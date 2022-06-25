@@ -74,6 +74,7 @@ public class Lsb4 {
         }
 
         byte[] editedBmp = bmp.clone();
+
         hide(cipherMessage.getCipherSize(), editedBmp, 0);
         hide(cipherMessage.getBytes(), editedBmp, 8);
 

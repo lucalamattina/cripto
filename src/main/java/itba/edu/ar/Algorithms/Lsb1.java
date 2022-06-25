@@ -33,11 +33,16 @@ public class Lsb1 {
 
         int startIndex = 0;
         byte[] bigEndianSize = Tools.makeBigEndian(message.getIntFileSize());
+
         hide(bigEndianSize, editedBmp, startIndex);
         startIndex += bigEndianSize.length * 8;
+        System.out.println("AFTER SIZE START = " + startIndex);
+
 
         hide(message.getFileBytes(), editedBmp, startIndex);
         startIndex += message.getFileBytes().length * 8;
+
+        System.out.println("AFTER SIZE START = " + startIndex);
 
 
 
@@ -49,6 +54,9 @@ public class Lsb1 {
 
         hide(fileExtension, editedBmp, startIndex);
         startIndex += fileExtension.length * 8;
+
+        System.out.println("AFTER SIZE START = " + startIndex);
+
 
 
         hide(new byte[1], editedBmp, startIndex);
@@ -146,10 +154,6 @@ public class Lsb1 {
     // Size en bytes
     private static byte[] reveal(byte[] toDecrypt, int size, int startByte) {
         byte[] reader = new byte[size];
-
-        System.out.println("REVEAL ACAAAA");
-        System.out.println(size);
-
 
         int readerIndex = 0;
 

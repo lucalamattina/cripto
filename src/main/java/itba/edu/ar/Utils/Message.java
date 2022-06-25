@@ -27,6 +27,32 @@ public class Message {
         return Tools.recoverNullTerminatedBytes(this.fileExtension);
     }
 
+    public byte[] unpackMessage(){
+        int size = this.fileSize.length + this.fileBytes.length + this.fileExtension.length;
+        byte[] toRet = new byte[size];
+        int i= 0;
+        //toRet[i] = fileSize[0];
+        //i++;
+        for (byte b : fileSize) {
+            toRet[i] = b;
+            System.out.println(i);
+            i++;
+        }
+        for (byte fileByte : fileBytes) {
+            toRet[i] = fileByte;
+            i++;
+        }
+        for (byte b : fileExtension) {
+            toRet[i] = b;
+            i++;
+        }
+        //toRet[i] = fileExtension[0];
+        if (i > size)
+            System.out.println("ERROR UNPACKMESSAGE");
+
+        return toRet;
+    }
+
     public byte[] makeByteArray() {
         int length = fileSize.length + fileBytes.length + fileExtension.length;
         byte[] str = new byte[length];

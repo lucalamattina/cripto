@@ -127,6 +127,8 @@ public class StegoBMP {
                     throw new CmdLineException("wrong algorithm", new Throwable());
             }
             encryptedMessage = new Encryptor(result, encryptionAlg, mode );
+
+            System.out.println("CRYPTED LENGTH "+  result.length);
             return result;
         }catch (Exception e){
             e.printStackTrace();
@@ -141,12 +143,19 @@ public class StegoBMP {
 
     public Message decrypt(String password) {
 
+        System.out.println("ADRENTROO");
         byte[] decryptedMsg = encryptedMessage.getMessage(password);
+
+        //System.out.println(Tools.hexStringFromBytes(decryptedMsg));
 
         byte[] msgSize = Arrays.copyOf(decryptedMsg, 4);
         int length = Tools.recoverBigEndianBytes(msgSize);
+        System.out.println(length);
         byte[] msgBytes = Arrays.copyOfRange(decryptedMsg, 4, length + 4);
         byte[] extension = Arrays.copyOfRange(decryptedMsg, length + 4, decryptedMsg.length);
+
+        System.out.println("ADRENTROO2");
+        System.out.println(length);
 
         return new Message(msgBytes,msgSize,extension);
 
