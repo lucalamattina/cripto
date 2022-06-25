@@ -90,18 +90,14 @@ public class App {
 
         }
 
-
         if(extract != null){
             try {
 
-                steganography = new StegoBMP(stegoAlgorithm,null, outFilename[0], encrypted);
-
-                Message message = steganography.deSteg(outFilename[0]);
+                steganography = new StegoBMP(stegoAlgorithm,null, porter[0], encrypted);
+                Message message = steganography.deSteg(porter[0]);
                 if (encrypted) {
-
                     //podria ser void
                     byte[] encryptedMsg = steganography.cryptedDeSteg(outFilename[0], algorithm, mode);
-
                     message = steganography.decrypt(password[0]);
 
                 }

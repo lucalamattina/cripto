@@ -34,7 +34,7 @@ public class Lsb4 {
         hide(fileExtension, editedBmp, startIndex);
         startIndex += fileExtension.length * 8 / 4;
 
-        hide(new byte[1], bmp, startIndex);
+        hide(new byte[1], editedBmp, startIndex);
         return editedBmp;
     }
 
@@ -63,7 +63,7 @@ public class Lsb4 {
         int messageEndByte = messageLength * 8 / 4;
         byte[] decryptedMessage = reveal(bmp, messageLength, messageStartByte);
         byte[] extension = revealExtension(bmp, messageStartByte + messageEndByte);
-        return new Message(Tools.makeBigEndian(messageLength), decryptedMessage, extension);
+        return new Message(decryptedMessage, Tools.makeBigEndian(messageLength), extension);
     }
 
 

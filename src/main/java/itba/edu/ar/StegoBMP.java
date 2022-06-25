@@ -1,12 +1,11 @@
 package itba.edu.ar;
 
 import itba.edu.ar.Algorithms.Lsb1;
+import itba.edu.ar.Algorithms.Lsb4;
+import itba.edu.ar.Algorithms.Lsbi;
 import itba.edu.ar.Utils.*;
 import itba.edu.ar.bmp.*;
-import jdk.internal.module.IllegalAccessLogger;
 import org.kohsuke.args4j.CmdLineException;
-
-import javax.swing.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -36,16 +35,16 @@ public class StegoBMP {
             holderBmp = Bmp.read(holderFile);
             byte[] outBmpData;
 
-            if (encrypted) {
+            if (!encrypted) {
                 switch (algorithm) {
                     case LSB1:
                         outBmpData = Lsb1.embedding(messageFile, holderBmp.getPixelData());
                         break;
                     case LSB4:
-                        outBmpData = Lsb1.embeddingCiphered(encryptedMessage, holderBmp.getPixelData());
+                        outBmpData = Lsb4.embedding(messageFile, holderBmp.getPixelData());
                         break;
                     case LSBI:
-                        outBmpData = Lsb1.embeddingCiphered(encryptedMessage, holderBmp.getPixelData());
+                        outBmpData = Lsbi.embedding(messageFile, holderBmp.getPixelData());
                         break;
                     default:
                         throw new CmdLineException("wrong algorithm", new Throwable());
@@ -56,10 +55,10 @@ public class StegoBMP {
                         outBmpData = Lsb1.embeddingCiphered(encryptedMessage, holderBmp.getPixelData());
                         break;
                     case LSB4:
-                        outBmpData = Lsb1.embeddingCiphered(encryptedMessage, holderBmp.getPixelData());
+                        outBmpData = Lsb4.embeddingCiphered(encryptedMessage, holderBmp.getPixelData());
                         break;
                     case LSBI:
-                        outBmpData = Lsb1.embeddingCiphered(encryptedMessage, holderBmp.getPixelData());
+                        outBmpData = Lsbi.embeddingCiphered(encryptedMessage, holderBmp.getPixelData());
                         break;
                     default:
                         throw new CmdLineException("wrong algorithm", new Throwable());
@@ -79,20 +78,18 @@ public class StegoBMP {
 
     public Message deSteg(String holderFile){
         Message result;
-
         Bmp holderBmp;
         try {
             holderBmp = Bmp.read(holderFile);
-
             switch (algorithm) {
                 case LSB1:
                     result = Lsb1.extract(holderBmp.getPixelData());
                     break;
                 case LSB4:
-                    result = Lsb1.extract(holderBmp.getPixelData());
+                    result = Lsb4.extract(holderBmp.getPixelData());
                     break;
                 case LSBI:
-                    result = Lsb1.extract(holderBmp.getPixelData());
+                    result = Lsbi.extract(holderBmp.getPixelData());
                     break;
                 default:
                     throw new CmdLineException("wrong algorithm", new Throwable());
@@ -111,16 +108,15 @@ public class StegoBMP {
         Bmp holderBmp;
         try {
             holderBmp = Bmp.read(holderFile);
-
             switch (algorithm) {
                 case LSB1:
                     result = Lsb1.extractCiphered(holderBmp.getPixelData());
                     break;
                 case LSB4:
-                    result = Lsb1.extractCiphered(holderBmp.getPixelData());
+                    result = Lsb4.extractCiphered(holderBmp.getPixelData());
                     break;
                 case LSBI:
-                    result = Lsb1.extractCiphered(holderBmp.getPixelData());
+                    result = Lsbi.extractCiphered(holderBmp.getPixelData());
                     break;
                 default:
                     throw new CmdLineException("wrong algorithm", new Throwable());

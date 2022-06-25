@@ -4,8 +4,10 @@ import itba.edu.ar.Utils.*;
 //import org.graalvm.compiler.bytecode.Bytes;
 import com.google.common.primitives.Bytes;
 
+import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Lsb1 {
@@ -14,7 +16,15 @@ public class Lsb1 {
     private static final int SIZE_LENGTH = 32;
 
     public static byte[] embedding(Message message, byte[] bmp) throws NotEnoughSpaceException {
+
+        System.out.println("bmp " + bmp.length);
+
+        System.out.println("message bytes " + message.getFileBytes().length);
+        System.out.println("message ext " + message.getFileExtension());
+        System.out.println("message size " + message.getIntFileSize());
+
         int messageSize = message.getIntFileSize();
+
         if (!canEncrypt(messageSize, bmp)) {
             throw new NotEnoughSpaceException();
         }
@@ -29,11 +39,20 @@ public class Lsb1 {
         hide(message.getFileBytes(), editedBmp, startIndex);
         startIndex += message.getFileBytes().length * 8;
 
+
+
         byte[] fileExtension = message.getFileExtension().getBytes();
+
+        System.out.println("extencion...................");
+        System.out.println(message.getFileExtension());
+        System.out.println(fileExtension.length);
+
         hide(fileExtension, editedBmp, startIndex);
         startIndex += fileExtension.length * 8;
 
-        hide(new byte[1], bmp, startIndex);
+
+        hide(new byte[1], editedBmp, startIndex);
+
         return editedBmp;
     }
 
@@ -52,15 +71,28 @@ public class Lsb1 {
             throw new WrongLSBStegException();
 
         int messageLength = getMessageLength(bmp);
+
+        System.out.println( "length = " + messageLength);
+
         if(messageLength < 0){
             throw new WrongLSBStegException();
         }
 
         int messageStartBit = SIZE_LENGTH;
         int messageEndBit = messageLength * 8;
+
+        System.out.println("decrypt " + messageLength + messageStartBit);
+
         byte[] decryptedMessage = reveal(bmp, messageLength, messageStartBit);
+
+        System.out.println("decrypt after " + messageLength + messageStartBit);
+
         byte[] extension = revealExtension(bmp, messageStartBit + messageEndBit);
-        return new Message(Tools.makeBigEndian(messageLength), decryptedMessage, extension);
+
+        System.out.println("decrypt exnte after " + messageLength + messageStartBit);
+
+
+        return new Message(decryptedMessage, Tools.makeBigEndian(messageLength), extension);
     }
 
 
@@ -111,9 +143,18 @@ public class Lsb1 {
     // Size en bytes
     private static byte[] reveal(byte[] toDecrypt, int size, int startByte) {
         byte[] reader = new byte[size];
+
+        System.out.println("REVEAL ACAAAA");
+        System.out.println(size);
+
+
         int readerIndex = 0;
+
         for (int decryptIndex = startByte; readerIndex / 8 < size; decryptIndex++) {
+
+
             readerIndex = setValuesToMessage(readerIndex, toDecrypt[decryptIndex], reader);
+
         }
         return reader;
     }

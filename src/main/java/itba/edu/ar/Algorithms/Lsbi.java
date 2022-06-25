@@ -155,11 +155,11 @@ public class Lsbi {
         int messageEndByte = messageLength * 8;
         byte[] decryptedMessage = reveal(bmp, messageLength, messageStartByte);
         byte[] extension = revealExtension(bmp, messageStartByte + messageEndByte);
-        return new Message(Tools.makeBigEndian(messageLength), decryptedMessage, extension);
+        return new Message(decryptedMessage, Tools.makeBigEndian(messageLength), extension);
     }
 
 
-    public byte[] embeddingCiphered(Encryptor cipherMessage, byte[] bmp) throws NotEnoughSpaceException {
+    public static byte[] embeddingCiphered(Encryptor cipherMessage, byte[] bmp) throws NotEnoughSpaceException {
         byte[] bytesToEncrypt = cipherMessage.getBytes();
         if (!canEncrypt(bytesToEncrypt.length, bmp)) {
             throw new NotEnoughSpaceException();
