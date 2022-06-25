@@ -15,6 +15,10 @@ public class Message {
         return fileSize;
     }
 
+    public int getIntFileSize() {
+        return fileSize.length;
+    }
+
     public byte[] getFileBytes() {
         return fileBytes;
     }

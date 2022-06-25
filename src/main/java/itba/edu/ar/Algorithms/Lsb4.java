@@ -1,44 +1,48 @@
 package itba.edu.ar.Algorithms;
 
+import com.google.common.primitives.Bytes;
+import itba.edu.ar.Utils.Encryptor;
+import itba.edu.ar.Utils.Message;
+import itba.edu.ar.Utils.Tools;
+
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Lsb4 {
 
     // Cantidad de bits reservados al tamaño
     private static final int SIZE_LENGTH = 32;
 
-    public byte[] embedding(Message message, byte[] bmp, int lsbs) throws NotEnoughSpaceException {
-        int messageSize = message.getFileSize();
+    public static byte[] embedding(Message message, byte[] bmp) throws NotEnoughSpaceException {
+        int messageSize = message.getIntFileSize();
         if (!canEncrypt(messageSize, bmp)) {
-            throw new NotEnoughSpaceException("BMP file is too small for the message");
+            throw new NotEnoughSpaceException();
         }
 
         byte[] editedBmp = bmp.clone();
 
         int startIndex = 0;
-        byte[] bigEndianSize = MessageUtils.toBigEndianBytes(message.getFileSize());
-        encrypt(bigEndianSize, editedBmp, startIndex, lsbs);
-        startIndex += bigEndianSize.length * 8 / lsbs;
+        byte[] bigEndianSize = Tools.makeBigEndian(message.getIntFileSize());
+        hide(bigEndianSize, editedBmp, startIndex);
+        startIndex += bigEndianSize.length * 8 / 4;
 
-        encrypt(message.getFileBytes(), editedBmp, startIndex, lsbs);
-        startIndex += message.getFileBytes().length * 8 / lsbs;
+        hide(message.getFileBytes(), editedBmp, startIndex);
+        startIndex += message.getFileBytes().length * 8 / 4;
 
         byte[] fileExtension = message.getFileExtension().getBytes();
-        encrypt(fileExtension, editedBmp, startIndex, lsbs);
-        startIndex += fileExtension.length * 8 / lsbs;
+        hide(fileExtension, editedBmp, startIndex);
+        startIndex += fileExtension.length * 8 / 4;
 
-        encryptNull(editedBmp, startIndex, lsbs);
+        hide(new byte[1], bmp, startIndex);
         return editedBmp;
     }
 
-
-    private void encryptNull(byte[] bmp, int startIndex, int lsbs) {
-        encrypt(new byte[1], bmp, startIndex, lsbs);
-    }
-
-    private void encrypt(byte[] messageToEncrypt, byte[] bmp, int startIndex, int lsbs) {
+    private static void hide(byte[] messageToHide, byte[] bmp, int startIndex) {
         int bmpIndex = startIndex;
-        for (int messageIndex = 0; messageIndex < messageToEncrypt.length * 8; bmpIndex++) {
-            for (int i = lsbs - 1; i >= 0; i--) {
-                int bitValue = getBitValueFromArray(messageToEncrypt, messageIndex);
+        for (int messageIndex = 0; messageIndex < messageToHide.length * 8; bmpIndex++) {
+            for (int i = 3; i >= 0; i--) {
+                int bitValue = getBitValueFromArray(messageToHide, messageIndex);
                 setBitValue(bmp, bmpIndex, i, bitValue);
                 messageIndex++;
             }
@@ -46,64 +50,55 @@ public class Lsb4 {
     }
 
 
-    public Message extract(byte[] bmp, int lsbs) throws WrongLSBStegException {
+    public static Message extract(byte[] bmp) throws WrongLSBStegException {
         if (bmp == null)
-            throw new WrongLSBStegException("Empty bpm");
+            throw new WrongLSBStegException();
 
         int messageLength = getMessageLength(bmp);
         if(messageLength < 0){
-            throw new WrongLSBStegException("Wrong LSB. Size read is negative");
+            throw new WrongLSBStegException();
         }
 
-        int messageStartByte = SIZE_LENGTH / lsbs;
-        int messageEndByte = messageLength * 8 / lsbs;
-        byte[] decryptedMessage = decrypt(bmp, messageLength, messageStartByte);
-        byte[] extension = decryptExtension(bmp, messageStartByte + messageEndByte);
-        return new Message.MessageBuilder()
-                .withFileSize(messageLength)
-                .withFileBytes(decryptedMessage)
-                .withFileExtension(extension)
-                .build();
+        int messageStartByte = SIZE_LENGTH / 4;
+        int messageEndByte = messageLength * 8 / 4;
+        byte[] decryptedMessage = reveal(bmp, messageLength, messageStartByte);
+        byte[] extension = revealExtension(bmp, messageStartByte + messageEndByte);
+        return new Message(Tools.makeBigEndian(messageLength), decryptedMessage, extension);
     }
 
 
-    public byte[] embeddingCiphered(CipherMessage cipherMessage, byte[] bmp) throws NotEnoughSpaceException {
-        byte[] bytesToEncrypt = cipherMessage.toByteArray();
+    public static byte[] embeddingCiphered(Encryptor cipherMessage, byte[] bmp) throws NotEnoughSpaceException {
+        byte[] bytesToEncrypt = cipherMessage.getBytes();
         if (!canEncrypt(bytesToEncrypt.length, bmp)) {
-            throw new NotEnoughSpaceException("BMP file is too small for the message");
+            throw new NotEnoughSpaceException();
         }
 
         byte[] editedBmp = bmp.clone();
-        encrypt(cipherMessage.toByteArray(), editedBmp, 0);
+        hide(cipherMessage.getBytes(), editedBmp, 0); //TODO: ESTO TALVEZ NO FUNCIONE
 
         return editedBmp;
     }
 
 
-    public CipherMessage extractCiphered(byte[] bmp, int lsbs) throws WrongLSBStegException {
+    public static byte[] extractCiphered(byte[] bmp) throws WrongLSBStegException {
         if (bmp == null)
-            throw new WrongLSBStegException("Bmp empty");
+            throw new WrongLSBStegException();
 
         int messageLength = getMessageLength(bmp);
 
         if(messageLength < 0){
-            throw new WrongLSBStegException("Wrong LSB. Size read is negative");
+            throw new WrongLSBStegException();
         }
 
-        int messageStartByte = SIZE_LENGTH / lsbs;
-        byte[] decryptedMessage = decrypt(bmp, messageLength, messageStartByte);
-        return new CipherMessage.CipherMessageBuilder()
-                .withCipherSize(messageLength)
-                .withCipherBytes(decryptedMessage)
-                .build();
+        return reveal(bmp, messageLength, SIZE_LENGTH / 4);
     }
 
 
-    public int getMaxSize(byte[] bmp, int lsbs) {
-        return bmp.length  * lsbs / 8;
+    public static int getMaxSize(byte[] bmp) {
+        return bmp.length  * 4 / 8;
     }
 
-    private byte[] decryptExtension(byte[] toDecrypt, int startByte, int lsbs) {
+    private static byte[] revealExtension(byte[] toDecrypt, int startByte) {
         List<Byte> byteList = new ArrayList<>();
         int readerIndex = 0;
         boolean lastIsNotNull = true;
@@ -111,7 +106,7 @@ public class Lsb4 {
             if((readerIndex / 8) + 1 > byteList.size())
                 byteList.add((byte)0);
 
-            readerIndex = setValuesToMessageList(readerIndex, toDecrypt[decryptIndex], byteList, lsbs);
+            readerIndex = setValuesToMessageList(readerIndex, toDecrypt[decryptIndex], byteList);
 
             if(readerIndex % 8 == 0) {
                 if (byteList.size() > 0 && byteList.get(byteList.size() - 1) == 0)
@@ -122,26 +117,22 @@ public class Lsb4 {
     }
 
     // Size en bytes
-    private byte[] decrypt(byte[] toDecrypt, int size, int startByte) {
+    private static byte[] reveal(byte[] toDecrypt, int size, int startByte) {
         byte[] reader = new byte[size];
         int readerIndex = 0;
         for (int decryptIndex = startByte; readerIndex / 8 < size; decryptIndex++) {
-            readerIndex = setValuesToMessage(readerIndex, toDecrypt[decryptIndex], reader, 4);
+            readerIndex = setValuesToMessage(readerIndex, toDecrypt[decryptIndex], reader);
         }
         return reader;
     }
 
-    private byte[] decrypt(byte[] toDecrypt, int size) {
-        return decrypt(toDecrypt, size, 0);
-    }
-
-    private int getMessageLength(byte[] toDecypt, int lsbs) {
-        byte[] size = decrypt(toDecypt, SIZE_LENGTH / lsbs);
+    private static int getMessageLength(byte[] toDecypt) {
+        byte[] size = reveal(toDecypt, SIZE_LENGTH / 4, 0);
         return ByteBuffer.wrap(size).getInt();
     }
 
-    private int setValuesToMessageList(int messageIndex, byte toDecrypt, List<Byte> message, int lsbs) {
-        for (int i = lsbs - 1; i >= 0; i--) {
+    private static int setValuesToMessageList(int messageIndex, byte toDecrypt, List<Byte> message) {
+        for (int i = 3; i >= 0; i--) {
             if (getBitValue(toDecrypt, i) > 0) {
                 turnBitOn(message, messageIndex);
             }
@@ -150,8 +141,8 @@ public class Lsb4 {
         return messageIndex;
     }
 
-    private int setValuesToMessage(int messageIndex, byte toDecrypt, byte[] message, int lsbs) {
-        for (int i = lsbs - 1; i >= 0; i--) {
+    private static int setValuesToMessage(int messageIndex, byte toDecrypt, byte[] message) {
+        for (int i = 3; i >= 0; i--) {
             if (getBitValue(toDecrypt, i) > 0) {
                 turnBitOn(message, messageIndex);
             }
@@ -160,18 +151,18 @@ public class Lsb4 {
         return messageIndex;
     }
 
-    private int getBitValue(byte b, int position) {
+    private static int getBitValue(byte b, int position) {
         return (b >> position & 1);
     }
 
-    private int getBitValueFromArray(byte[] arr, int bit) {
+    private static int getBitValueFromArray(byte[] arr, int bit) {
         int index = bit / 8;
         int bitPosition = 7 - (bit % 8);
 
         return getBitValue(arr[index], bitPosition);
     }
 
-    private void turnBitOn(List<Byte> arr, int pos) {
+    private static void turnBitOn(List<Byte> arr, int pos) {
         int index = pos / 8;
         int bitPosition = 7 - (pos % 8);
 
@@ -179,23 +170,23 @@ public class Lsb4 {
         arr.set(index, b);
     }
 
-    private void turnBitOn(byte[] arr, int pos) {
+    private static void turnBitOn(byte[] arr, int pos) {
         int index = pos / 8;
         int bitPosition = 7 - (pos % 8);
 
         arr[index] |= (1 << bitPosition);
     }
 
-    private void setBitValue(byte[] arr, int pos, int shifting, int value) {
+    private static void setBitValue(byte[] arr, int pos, int shifting, int value) {
         if (value == 1)
             arr[pos] |= 1 << shifting;
         else
             arr[pos] &= (255 - (1 << shifting));
     }
 
-    private boolean canEncrypt(int messageSize, byte[] bmp, int lsbs) {
+    private static boolean canEncrypt(int messageSize, byte[] bmp) {
         int bitsToWrite = messageSize * 8;
-        return bmp.length * lsbs >= bitsToWrite;
+        return bmp.length * 4 >= bitsToWrite;
     }
 
 }

@@ -73,15 +73,16 @@ public class App {
             try {
                 if (inFilename.length > 1)
                     throw new CmdLineException(cmdParser,"in Path Is incorrect", new Throwable());
-                steganography = new StegoBMP(stegoAlgorithm, inFilename[0]);
+                steganography = new StegoBMP(stegoAlgorithm, inFilename[0], outFilename[0], encrypted);
 
                 steganography.readMessage();
-
 
                 if(encrypted){
                     steganography.encrypt(password[0], algorithm, mode);
                 }
-                //  steganography.steg();
+
+                steganography.steg( porter[0]);
+
             }catch (Exception e){
                 System.out.println(e.getMessage());
                 System.exit(1);
@@ -92,18 +93,18 @@ public class App {
 
         if(extract != null){
             try {
-                Message message = steganography.getMessageFile();
-                if (encrypted) {
-                    Encryptor encryptedMsg = steganography.getEncryptedMessage();
 
+                steganography = new StegoBMP(stegoAlgorithm,null, outFilename[0], encrypted);
+
+                Message message = steganography.deSteg(outFilename[0]);
+                if (encrypted) {
+
+                    //podria ser void
+                    byte[] encryptedMsg = steganography.cryptedDeSteg(outFilename[0], algorithm, mode);
 
                     message = steganography.decrypt(password[0]);
 
                 }
-                /*else {
-
-                   message = lsb.extract(holderBmp.getPixelData());
-                }*/
 
 
                 File outFile = new File(outFilename[0] + message.getFileExtension());

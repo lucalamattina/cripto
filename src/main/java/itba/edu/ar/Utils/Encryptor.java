@@ -34,6 +34,11 @@ public class Encryptor {
         return bytes;
     }
 
+    public void setBytes(byte[] bytes) {
+        this.bytes = bytes;
+    }
+
+
     public byte[] getMessage(String password) {
         try {
             return symmetricEncrypt(Cipher.DECRYPT_MODE, this.bytes ,password);
@@ -42,6 +47,10 @@ public class Encryptor {
             System.exit(1);
         }
         return this.bytes;// solo si se rompe
+    }
+
+    public byte[] getBytes() {
+        return bytes;
     }
 
 
@@ -58,14 +67,21 @@ public class Encryptor {
         this.size = Tools.makeBigEndian(this.bytes.length);
     }
 
+    public Encryptor(byte[] messageEncrypted , Algorithm algorithm, Modes mode) {
+
+        this.algorithm = algorithm;
+        this.mode = mode;
+
+        this.bytes = messageEncrypted;
+        this.size = Tools.makeBigEndian(this.bytes.length);
+    }
+
     private byte[] symmetricEncrypt(int type ,byte[] bytes, String password) throws Exception {
 
         Cipher cipher = Cipher.getInstance(algorithm.getAlgTransformation() + "/" + mode.getModeTransformation() + "/" + mode.getPaddingTransformation());
 
 
         byte[] passwordInBytes = password.getBytes(StandardCharsets.UTF_8);
-        byte[] passwordInBytes2 = (password).getBytes(StandardCharsets.UTF_8);
-
 
          byte[][] keyWithIv = EVP_BytesToKey( algorithm.getKeySize(), algorithm.getBlockSize(), passwordInBytes);
 
