@@ -3,6 +3,7 @@ package itba.edu.ar.bmp;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
@@ -75,7 +76,7 @@ public class Bmp {
         BitMapInfo.write(bmp.infoHeader, buffer);
         buffer.put(bmp.pixelData);
 
-        buffer.flip();
+        ((Buffer)buffer).flip();
         FileChannel channel = new FileOutputStream(file).getChannel();
         channel.write(buffer);
         channel.close();
