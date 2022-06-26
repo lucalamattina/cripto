@@ -17,12 +17,6 @@ public class Lsb1 {
 
     public static byte[] embedding(Message message, byte[] bmp) throws NotEnoughSpaceException {
 
-        System.out.println("bmp " + bmp.length);
-
-        System.out.println("message bytes " + message.getFileBytes().length);
-        System.out.println("message ext " + message.getFileExtension());
-        System.out.println("message size " + message.getIntFileSize());
-
         int messageSize = message.getIntFileSize();
 
         if (!canEncrypt(messageSize, bmp)) {
@@ -36,26 +30,18 @@ public class Lsb1 {
 
         hide(bigEndianSize, editedBmp, startIndex);
         startIndex += bigEndianSize.length * 8;
-        System.out.println("AFTER SIZE START = " + startIndex);
 
 
         hide(message.getFileBytes(), editedBmp, startIndex);
         startIndex += message.getFileBytes().length * 8;
 
-        System.out.println("AFTER SIZE START = " + startIndex);
-
 
 
         byte[] fileExtension = message.getFileExtension().getBytes();
 
-        System.out.println("extencion...................");
-        System.out.println(message.getFileExtension());
-        System.out.println(fileExtension.length);
-
         hide(fileExtension, editedBmp, startIndex);
         startIndex += fileExtension.length * 8;
 
-        System.out.println("AFTER SIZE START = " + startIndex);
 
 
 
@@ -81,7 +67,6 @@ public class Lsb1 {
 
         int messageLength = getMessageLength(bmp);
 
-        System.out.println( "length = " + messageLength);
 
         if(messageLength < 0){
             throw new WrongLSBStegException();
@@ -92,14 +77,10 @@ public class Lsb1 {
 
         byte[] decryptedMessage = reveal(bmp, messageLength, messageStartBit);
 
-       // System.out.println(Tools.hexStringFromBytes(decryptedMessage));
 
 
 
         byte[] extension = revealExtension(bmp, messageStartBit + messageEndBit);
-
-        System.out.println(extension.length);
-        System.out.println(Tools.hexStringFromBytes(extension));
 
         return new Message(decryptedMessage, Tools.makeBigEndian(messageLength), extension);
     }
@@ -126,10 +107,10 @@ public class Lsb1 {
 
         int messageLength = getMessageLength(bmp);
 
+
         if(messageLength < 0){
             throw new WrongLSBStegException();
         }
-
         return reveal(bmp, messageLength, SIZE_LENGTH);
     }
 
@@ -162,6 +143,10 @@ public class Lsb1 {
 
             readerIndex = setValuesToMessage(readerIndex, toDecrypt[decryptIndex], reader);
 
+        }
+        System.out.println(size);
+        for (int i = 0; i < 8; i++) {
+            System.out.println( String.format("%8s", Integer.toBinaryString(reader[i] & 0xFF)).replace(' ', '0'));
         }
         return reader;
     }

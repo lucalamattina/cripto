@@ -107,7 +107,7 @@ public class App {
                 }
 
 
-                File outFile = new File(outFilename[0] + message.getFileExtension());
+                File outFile = new File(outFilename[0]  + message.getFileExtension());
 
                 OutputStream os = new FileOutputStream(outFile);
                 os.write(message.getFileBytes());

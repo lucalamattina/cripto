@@ -28,7 +28,7 @@ public class Message {
     }
 
     public byte[] unpackMessage(){
-        int size = this.fileSize.length + this.fileBytes.length + this.fileExtension.length;
+        int size = this.fileSize.length + this.fileBytes.length + this.fileExtension.length + 1;
         byte[] toRet = new byte[size];
         int i= 0;
         //toRet[i] = fileSize[0];
@@ -46,7 +46,11 @@ public class Message {
             toRet[i] = b;
             i++;
         }
-        //toRet[i] = fileExtension[0];
+        byte[] b = new byte[1];
+        for (byte by : b) {
+            toRet[i] = by;
+            i++;
+        }
         if (i > size)
             System.out.println("ERROR UNPACKMESSAGE");
 

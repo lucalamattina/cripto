@@ -74,6 +74,8 @@ public class Encryptor {
 
         this.bytes = messageEncrypted;
         this.size = Tools.makeBigEndian(this.bytes.length);
+
+        System.out.println("size = " + size + "length = " + bytes.length);
     }
 
     private byte[] symmetricEncrypt(int type ,byte[] bytes, String password) throws Exception {

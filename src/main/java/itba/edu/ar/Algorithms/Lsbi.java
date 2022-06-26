@@ -70,14 +70,26 @@ public class Lsbi {
             }
         }
 
+        System.out.println("EDITED BMP LAGRGO");
+        System.out.println(editedBmp.length);
+        System.out.println(editedBmp.length / 8);
+
+
+        for (int i = 0; i < 36; i++) {
+            System.out.println( String.format("%8s", Integer.toBinaryString(editedBmp[i] & 0xFF)).replace(' ', '0'));
+        }
 
         return editedBmp;
+
+
     }
 
 
 
     private static void hide(byte[] messageToEncrypt, byte[] editedBmp, int startIndex, List<Integer> componentTypes) {
         int bmpIndex = startIndex ;
+        int count = 0;
+
         for (int messageIndex = 0; messageIndex < messageToEncrypt.length * 8; bmpIndex++) {
 
             int lsb1 = getBitValue(editedBmp[bmpIndex], 0);
@@ -129,12 +141,19 @@ public class Lsbi {
             }
             setBitValue(editedBmp, bmpIndex, bitValue);
             messageIndex++;
+            count = messageIndex;
         }
+        System.out.println("COMPONENTS " +  componentTypes);
+        System.out.println("msgIndex "+ count);
+        System.out.println("bmpIndex "+ bmpIndex);
+
         bmpIndex = startIndex;
+
         for (int messageIndex = 0; messageIndex < messageToEncrypt.length * 8; bmpIndex++) {
             int lsb1 = getBitValue(editedBmp[bmpIndex], 0);
             int lsb2 = getBitValue(editedBmp[bmpIndex], 1);
             int lsb3 = getBitValue(editedBmp[bmpIndex], 2);
+
             if(lsb3 == 0 && lsb2 == 0 && componentTypes.get(0) > 0){
                 lsb1 = (lsb1 - 1) * - 1; //to invert bit value
                 setBitValue(editedBmp, bmpIndex, lsb1);
@@ -195,15 +214,11 @@ public class Lsbi {
         for (int i = 0; i < bmp.length; i++) {
 
             byte current = bmp[i];
-            /*
-            if (i< 36) {
-                System.out.println("CURRENT "+ i + String.format("%8s", Integer.toBinaryString(current & 0xFF)).replace(' ', '0'));
-                System.out.println("BMP " + i + String.format("%8s", Integer.toBinaryString(bmp[i] & 0xFF)).replace(' ', '0'));
-            }*/
+
 
                 if(i < 4){
                 componentTypes.set(i, getBitValue(current, 0) );
-            }//else {
+            }else {
 
                 msgByte = setValuesToMessage(msgIndex ,current, msgByte, componentTypes);
                 msgIndex = (msgIndex + 1) % 8;
@@ -215,7 +230,7 @@ public class Lsbi {
                     msgByte = (byte) 0;
 
                 }
-            //}
+            }
             //System.out.println( "Iteration = " + i);
         }
 
@@ -230,7 +245,7 @@ public class Lsbi {
 
         byte[] msgBytes = Arrays.copyOfRange(extraction, 4, length + 4);
 
-        byte[] extension = Arrays.copyOfRange(extraction, length + 4, length + 9);
+        byte[] extension = Arrays.copyOfRange(extraction, length + 4, length + 10);
 
         return new Message(msgBytes, Tools.makeBigEndian(messageSize), extension);
     }
@@ -278,21 +293,22 @@ public class Lsbi {
         List<Integer> componentTypes = new ArrayList<>();
         componentTypes.add(0,0);componentTypes.add(1,0);componentTypes.add(2,0);componentTypes.add(3,0);
 
+
         byte msgByte = (byte)0;
         int msgIndex = 0;
 
         for (int i = 0; i < bmp.length; i++) {
 
+
+            if (i >= 40 && i < 48 ){
+                System.out.println( String.format("%8s", Integer.toBinaryString(bmp[i] & 0xFF)).replace(' ', '0'));
+            }
+
             byte current = bmp[i];
-            /*
-            if (i< 36) {
-                System.out.println("CURRENT "+ i + String.format("%8s", Integer.toBinaryString(current & 0xFF)).replace(' ', '0'));
-                System.out.println("BMP " + i + String.format("%8s", Integer.toBinaryString(bmp[i] & 0xFF)).replace(' ', '0'));
-            }*/
 
             if(i < 4){
                 componentTypes.set(i, getBitValue(current, 0) );
-            }//else {
+            }else {
 
             msgByte = setValuesToMessage(msgIndex ,current, msgByte, componentTypes);
             msgIndex = (msgIndex + 1) % 8;
@@ -302,7 +318,7 @@ public class Lsbi {
                 msgByte = (byte) 0;
 
             }
-            //}
+            }
         }
         byte[] extraction =  Bytes.toArray(fullMsg);
 
@@ -338,11 +354,16 @@ public class Lsbi {
  */
         byte[] messageSize = Arrays.copyOf(extraction, 4);
         int length = Tools.recoverBigEndianBytes(messageSize);
+
+
         System.out.println("LENGTH " + length);
 
         byte[] message = Arrays.copyOfRange(extraction, 4, length + 4);
 
-        System.out.println("MESSSAGE SIZE IN EXTRACT " + messageSize);
+        for (int i = 0; i < 4; i++) {
+            System.out.println( String.format("%8s", Integer.toBinaryString(message[i] & 0xFF)).replace(' ', '0'));
+        }
+        System.out.println("MESSSAGE SIZE IN EXTRACT " + message.length);
         return message;
     }
 

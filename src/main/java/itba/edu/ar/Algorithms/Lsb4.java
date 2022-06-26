@@ -88,6 +88,7 @@ public class Lsb4 {
 
         int messageLength = getMessageLength(bmp);
 
+
         if(messageLength < 0){
             throw new WrongLSBStegException();
         }
