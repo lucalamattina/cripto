@@ -41,20 +41,20 @@ Parametros:
 
 ###### Ejemplo 1: Extraccion LSBI con encripción AES256 and OFB 
   ```
-java -jar ./target/criptoTp-jar-with-dependencies.jar -extract -p "./archivos/ladoLSBIaes256ofb.bmp" -out "./archivos/result" -steg LSBI -pass secreto -a AES256 -m OFB
+java -jar ./target/criptoTp-jar-with-dependencies.jar -extract -p "./archivos/ladoLSBIaes256ofb.bmp" -out "./archivos/Ejemplo1" -steg LSBI -pass secreto -a AES256 -m OFB
   ```
 
 ###### Ejemplo 2: Extraccion LSB1
   ```
-java -jar ./target/criptoTp-jar-with-dependencies.jar -extract -p "./archivos/ladoLSB1.bmp" -out "./archivos/Resultado" -steg LSB1
+java -jar ./target/criptoTp-jar-with-dependencies.jar -extract -p "./archivos/ladoLSB1.bmp" -out "./archivos/Ejemplo2" -steg LSB1
   ```
 
-###### Ejemplo 2: Extraccion LSB4
+###### Ejemplo 3: Extraccion LSB4
   ```
-java -jar ./target/criptoTp-jar-with-dependencies.jar -extract -p "./archivos/ladoLSB4.bmp" -out "./archivos/Resultado" -steg LSB4
+java -jar ./target/criptoTp-jar-with-dependencies.jar -extract -p "./archivos/ladoLSB4.bmp" -out "./archivos/Ejemplo3" -steg LSB4
   ```
 
-###### Ejemplo 2: Escondido con LSB1
+###### Ejemplo 4: Escondido con LSB1
   ```
- java -jar ./target/criptoTp-jar-with-dependencies.jar -embed -in "./archivos/itba.png" -p "./archivos/lado.bmp" -out "./archivos/lsb1.bmp" -steg LSB1
-  ```
+ java -jar ./target/criptoTp-jar-with-dependencies.jar -embed -in "./archivos/itba.png" -p "./archivos/lado.bmp" -out "./archivos/Ejemplo4.bmp" -steg LSB1
+ 
