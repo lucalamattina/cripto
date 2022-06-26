@@ -144,10 +144,7 @@ public class Lsb1 {
             readerIndex = setValuesToMessage(readerIndex, toDecrypt[decryptIndex], reader);
 
         }
-        System.out.println(size);
-        for (int i = 0; i < 8; i++) {
-            System.out.println( String.format("%8s", Integer.toBinaryString(reader[i] & 0xFF)).replace(' ', '0'));
-        }
+
         return reader;
     }
 

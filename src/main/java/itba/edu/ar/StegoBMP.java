@@ -55,11 +55,9 @@ public class StegoBMP {
 
                 switch (algorithm) {
                     case LSB1:
-                        System.out.println("cripted " + encryptedMessage.getBytes().length);
                         outBmpData = Lsb1.embeddingCiphered(encryptedMessage, holderBmp.getPixelData());
                         break;
                     case LSB4:
-                        System.out.println("cripted " + encryptedMessage.getBytes().length);
                         outBmpData = Lsb4.embeddingCiphered(encryptedMessage, holderBmp.getPixelData());
                         break;
                     case LSBI:
@@ -70,8 +68,6 @@ public class StegoBMP {
 
                 }
             }
-
-            System.out.println("after embed " + outBmpData.length);
 
             Bmp.write(holderBmp.getFileHeader(), holderBmp.getInfoHeader(), outBmpData, this.outFile );
 
@@ -132,7 +128,6 @@ public class StegoBMP {
 
             encryptedMessage = new Encryptor(result, encryptionAlg, mode );
 
-            System.out.println("CRYPTED LENGTH "+  result.length);
             return result;
         }catch (Exception e){
             e.printStackTrace();
@@ -153,8 +148,6 @@ public class StegoBMP {
         byte[] msgSize = Arrays.copyOf(decryptedMsg, 4);
 
         int length = Tools.recoverBigEndianBytes(msgSize);
-
-        System.out.println(length);
 
         byte[] msgBytes = Arrays.copyOfRange(decryptedMsg, 4, length + 4);
         byte[] extension = Arrays.copyOfRange(decryptedMsg, length + 4, decryptedMsg.length);

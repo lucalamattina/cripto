@@ -41,9 +41,9 @@ Parametros:
 
 ###### Ejemplo 1: Extraccion LSBI con encripción AES256 and OFB 
   ```
-java -jar .\target\criptoTp-jar-with-dependencies.jar -extract -p ".\archivos\ladoLSBIaes256ofb.bmp" -out ".\archivos\result" -steg LSBI -pass secreto -a AES256 -m OFB
+java -jar ./target/criptoTp-jar-with-dependencies.jar -extract -p "./archivos/ladoLSBIaes256ofb.bmp" -out "./archivos/result" -steg LSBI -pass secreto -a AES256 -m OFB
   ```
 ###### Ejemplo 2: Escondido con LSB1
   ```
-java -jar .\target\criptoTp-jar-with-dependencies.jar -embed -in ".\archivos\itba.png" -p ".\archivos\lado.bmp" -out ".\archivos\lsb1.bmp" -steg LSB1 
+ java -jar ./target/criptoTp-jar-with-dependencies.jar -embed -in "./archivos/itba.png" -p "./archivos/lado.bmp" -out "./archivos/lsb1.bmp" -steg LSB1
   ```

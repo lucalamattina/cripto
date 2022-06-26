@@ -34,7 +34,6 @@ public class Message {
 
         for (byte b : fileSize) {
             toRet[i] = b;
-            System.out.println(i);
             i++;
         }
         for (byte fileByte : fileBytes) {

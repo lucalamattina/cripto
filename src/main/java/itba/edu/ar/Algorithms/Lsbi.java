@@ -257,14 +257,9 @@ public class Lsbi {
         int length = Tools.recoverBigEndianBytes(messageSize);
 
 
-        System.out.println("LENGTH " + length);
 
         byte[] message = Arrays.copyOfRange(extraction, 4, length + 4);
 
-        for (int i = 0; i < 4; i++) {
-            System.out.println( String.format("%8s", Integer.toBinaryString(message[i] & 0xFF)).replace(' ', '0'));
-        }
-        System.out.println("MESSSAGE SIZE IN EXTRACT " + message.length);
         return message;
     }
 
