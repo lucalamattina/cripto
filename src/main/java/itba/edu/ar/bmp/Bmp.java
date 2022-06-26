@@ -59,10 +59,6 @@ public class Bmp {
     }
 
 
-    public static Bmp read(File file) throws IOException {
-        return Bmp.read(file.toPath());
-    }
-
     public static Bmp read(String pathToFile) throws IOException {
         return Bmp.read(Paths.get(pathToFile));
     }

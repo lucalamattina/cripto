@@ -21,15 +21,19 @@ public class BitMapFileHeader {
     public short getBfType() {
         return bfType;
     }
+
     public int getBfSize() {
         return bfSize;
     }
+
     public int getBfOffBits() {
         return bfOffBits;
     }
+
     public static BitMapFileHeader read(ByteBuffer buf) {
         return new BitMapFileHeader(buf);
     }
+
     public static void write(BitMapFileHeader header, ByteBuffer buf) {
         buf.putShort(header.bfType);
         buf.putInt(header.bfSize);

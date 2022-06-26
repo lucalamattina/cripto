@@ -20,24 +20,9 @@ public class Encryptor {
     private final byte[] size;
     private byte[] bytes;
 
-    private byte[] decryption;
-
-    public byte[] getDecryption() {
-        return decryption;
-    }
-
     public byte[] getCipherSize() {
         return size;
     }
-
-    public byte[] getCipherBytes() {
-        return bytes;
-    }
-
-    public void setBytes(byte[] bytes) {
-        this.bytes = bytes;
-    }
-
 
     public byte[] getMessage(String password) {
         try {
@@ -46,7 +31,7 @@ public class Encryptor {
             e.printStackTrace();
             System.exit(1);
         }
-        return this.bytes;// solo si se rompe
+        return this.bytes;
     }
 
     public byte[] getBytes() {

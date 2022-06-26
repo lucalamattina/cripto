@@ -31,8 +31,7 @@ public class Message {
         int size = this.fileSize.length + this.fileBytes.length + this.fileExtension.length + 1;
         byte[] toRet = new byte[size];
         int i= 0;
-        //toRet[i] = fileSize[0];
-        //i++;
+
         for (byte b : fileSize) {
             toRet[i] = b;
             System.out.println(i);

@@ -34,15 +34,19 @@ public class BitMapInfoHeader {
     public short getBiBitCount() {
         return biBitCount;
     }
+
     public int getBiCompression() {
         return biCompression;
     }
+
     public int getBiSizeImage() {
         return biSizeImage;
     }
+
     public static BitMapInfoHeader read(ByteBuffer buf) {
         return new BitMapInfoHeader(buf);
     }
+
     public static void write(BitMapInfoHeader header, ByteBuffer buf) {
         buf.putInt(header.biSize);
         buf.putInt(header.biWidth);
