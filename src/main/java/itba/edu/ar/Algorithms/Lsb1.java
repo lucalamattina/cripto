@@ -90,16 +90,16 @@ public class Lsb1 {
         int messageStartBit = SIZE_LENGTH;
         int messageEndBit = messageLength * 8;
 
-        System.out.println("decrypt " + messageLength + messageStartBit);
-
         byte[] decryptedMessage = reveal(bmp, messageLength, messageStartBit);
 
-        System.out.println("decrypt after " + messageLength + messageStartBit);
+       // System.out.println(Tools.hexStringFromBytes(decryptedMessage));
+
+
 
         byte[] extension = revealExtension(bmp, messageStartBit + messageEndBit);
 
-        System.out.println("decrypt exnte after " + messageLength + messageStartBit);
-
+        System.out.println(extension.length);
+        System.out.println(Tools.hexStringFromBytes(extension));
 
         return new Message(decryptedMessage, Tools.makeBigEndian(messageLength), extension);
     }
