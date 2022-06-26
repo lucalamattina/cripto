@@ -69,44 +69,45 @@ public class App {
         }
 
 
-       if(embed != null){
-           try {
-               if (inFilename.length > 1)
-                   throw new CmdLineException(cmdParser,"in Path Is incorrect", new Throwable());
-               steganography = new StegoBMP(stegoAlgorithm, inFilename[0]);
-
-              steganography.readMessage();
-
-
-              if(encrypted){
-                  steganography.encrypt(password[0], algorithm, mode);
-              }
-            //  steganography.steg();
-           }catch (Exception e){
-               System.out.println(e.getMessage());
-               System.exit(1);
-           }
-
-       }
-
-
-        if(true){//extract != null){
+        if(embed != null){
             try {
-                Message message = steganography.getMessageFile();
-                if (encrypted) {
-                    Encryptor encryptedMsg = steganography.getEncryptedMessage();
+                if (inFilename.length > 1)
+                    throw new CmdLineException(cmdParser,"in Path Is incorrect", new Throwable());
+                steganography = new StegoBMP(stegoAlgorithm, inFilename[0], outFilename[0], encrypted);
 
+                steganography.readMessage();
 
+                if(encrypted){
+                    steganography.encrypt(password[0], algorithm, mode);
+                }
+                steganography.steg( porter[0]);
+
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+                System.exit(1);
+            }
+
+        }
+
+        if(extract != null){
+            try {
+
+                steganography = new StegoBMP(stegoAlgorithm,null, outFilename[0], encrypted);
+                Message  message;
+                if (!encrypted) {
+                     message = steganography.deSteg(porter[0]);
+                } else  {
+
+                    System.out.println("IIINNN");
+
+                    //podria ser void
+                    byte[] encryptedMsg = steganography.cryptedDeSteg(porter[0], algorithm, mode);
                     message = steganography.decrypt(password[0]);
 
                 }
-                /*else {
-
-                   message = lsb.extract(holderBmp.getPixelData());
-                }*/
 
 
-                File outFile = new File(outFilename[0] + message.getFileExtension());
+                File outFile = new File(outFilename[0]  + message.getFileExtension());
 
                 OutputStream os = new FileOutputStream(outFile);
                 os.write(message.getFileBytes());

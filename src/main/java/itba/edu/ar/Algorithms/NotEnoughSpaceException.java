@@ -1,4 +1,5 @@
 package itba.edu.ar.Algorithms;
 
-public class NotEnoughSpaceException {
+public class NotEnoughSpaceException extends Exception {
+
 }

@@ -20,18 +20,8 @@ public class Encryptor {
     private final byte[] size;
     private byte[] bytes;
 
-    private byte[] decryption;
-
-    public byte[] getDecryption() {
-        return decryption;
-    }
-
     public byte[] getCipherSize() {
         return size;
-    }
-
-    public byte[] getCipherBytes() {
-        return bytes;
     }
 
     public byte[] getMessage(String password) {
@@ -41,7 +31,11 @@ public class Encryptor {
             e.printStackTrace();
             System.exit(1);
         }
-        return this.bytes;// solo si se rompe
+        return this.bytes;
+    }
+
+    public byte[] getBytes() {
+        return bytes;
     }
 
 
@@ -58,14 +52,23 @@ public class Encryptor {
         this.size = Tools.makeBigEndian(this.bytes.length);
     }
 
+    public Encryptor(byte[] messageEncrypted , Algorithm algorithm, Modes mode) {
+
+        this.algorithm = algorithm;
+        this.mode = mode;
+
+        this.bytes = messageEncrypted;
+        this.size = Tools.makeBigEndian(this.bytes.length);
+
+        System.out.println("size = " + size + "length = " + bytes.length);
+    }
+
     private byte[] symmetricEncrypt(int type ,byte[] bytes, String password) throws Exception {
 
         Cipher cipher = Cipher.getInstance(algorithm.getAlgTransformation() + "/" + mode.getModeTransformation() + "/" + mode.getPaddingTransformation());
 
 
         byte[] passwordInBytes = password.getBytes(StandardCharsets.UTF_8);
-        byte[] passwordInBytes2 = (password).getBytes(StandardCharsets.UTF_8);
-
 
          byte[][] keyWithIv = EVP_BytesToKey( algorithm.getKeySize(), algorithm.getBlockSize(), passwordInBytes);
 
