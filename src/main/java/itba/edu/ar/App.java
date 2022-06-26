@@ -97,10 +97,6 @@ public class App {
                 if (!encrypted) {
                      message = steganography.deSteg(porter[0]);
                 } else  {
-
-                    System.out.println("IIINNN");
-
-                    //podria ser void
                     byte[] encryptedMsg = steganography.cryptedDeSteg(porter[0], algorithm, mode);
                     message = steganography.decrypt(password[0]);
 
