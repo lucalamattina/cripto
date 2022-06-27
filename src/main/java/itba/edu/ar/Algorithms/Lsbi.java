@@ -156,12 +156,10 @@ public class Lsbi {
 
             byte current = bmp[i];
 
-
-                if(i < 4){
+            if(i < 4){
                 componentTypes.set(i, getBitValue(current, 0) );
             }else {
-
-                msgByte = setValuesToMessage(msgIndex ,current, msgByte, componentTypes);
+                msgByte = setValuesToMessage(msgIndex ,current, msgByte, componentTypes, i);
                 msgIndex = (msgIndex + 1) % 8;
 
                 if (msgIndex == 0){
@@ -176,13 +174,12 @@ public class Lsbi {
         byte[] size;
         int messageSize = 0;
 
-
         size = Arrays.copyOf(extraction, 4);
         int length = Tools.recoverBigEndianBytes(size);
 
         byte[] msgBytes = Arrays.copyOfRange(extraction, 4, length + 4);
 
-        byte[] extension = Arrays.copyOfRange(extraction, length + 4, length + 10);
+        byte[] extension = Arrays.copyOfRange(extraction, length + 4, length + 16);
 
         return new Message(msgBytes, Tools.makeBigEndian(messageSize), extension);
     }
@@ -242,7 +239,7 @@ public class Lsbi {
                 componentTypes.set(i, getBitValue(current, 0) );
             }else {
 
-            msgByte = setValuesToMessage(msgIndex ,current, msgByte, componentTypes);
+            msgByte = setValuesToMessage(msgIndex ,current, msgByte, componentTypes, i);
             msgIndex = (msgIndex + 1) % 8;
 
             if (msgIndex == 0){
@@ -263,37 +260,40 @@ public class Lsbi {
         return message;
     }
 
-    private static byte setValuesToMessage(int messageIndex, byte toDecrypt, byte message, List<Integer> componentTypes) {
+    private static byte setValuesToMessage(int messageIndex, byte toDecrypt, byte message, List<Integer> componentTypes, int pos) {
         int lsb1 = getBitValue(toDecrypt, 0);
         int lsb2 = getBitValue(toDecrypt, 1);
         int lsb3 = getBitValue(toDecrypt, 2);
 
         if(lsb3 == 0 && lsb2 == 0 && componentTypes.get(0) > 0){
             lsb1 = (lsb1 - 1) * - 1; //to invert bit value
-            return setSpecificBitValue(message, messageIndex, lsb1);
+            return setSpecificBitValue(message, messageIndex , lsb1,pos);
+
         }
         else if(lsb3 == 0 && lsb2 == 1 && componentTypes.get(1) > 0){
             lsb1 = (lsb1 - 1) * - 1; //to invert bit value
-            return setSpecificBitValue(message, messageIndex, lsb1);
+            return setSpecificBitValue(message, messageIndex, lsb1,pos);
         }
         else if(lsb3 == 1 && lsb2 == 0 && componentTypes.get(2) > 0){
             lsb1 = (lsb1 - 1) * - 1; //to invert bit value
-            return setSpecificBitValue(message, messageIndex, lsb1);
+            return setSpecificBitValue(message, messageIndex, lsb1,pos);
         }
         else if(lsb3 == 1 && lsb2 == 1 && componentTypes.get(3) > 0){
             lsb1 = (lsb1 - 1) * - 1; //to invert bit value
-            return setSpecificBitValue(message, messageIndex, lsb1);
+            return setSpecificBitValue(message, messageIndex, lsb1, pos);
         }
-        return message ;
+        return setSpecificBitValue(message, messageIndex, lsb1, pos);
     }
 
-    private static byte setSpecificBitValue(byte arr, int n, int value) {
+    private static byte setSpecificBitValue(byte arr, int n, int value, int i) {
         int bitpos = 7 - (n%8);
         byte ret = arr;
-        if (value == 1)
+        if (value == 1){
             ret |= 1 << bitpos;
-        else
+        }
+        else{
             ret &= ~(1 << bitpos);
+        }
         return ret;
     }
 
